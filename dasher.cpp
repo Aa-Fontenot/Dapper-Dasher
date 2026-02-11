@@ -9,7 +9,9 @@ int main() {
     // rectangle values
     const int width{50};
     const int height{80};
-    int posY{window_height - height};
+    const int effLowerBound{window_height - height};
+    int posY{effLowerBound};
+    const int jump_velocity{-22};
     
     int y_velocity{0};
     int x_velocity{0};
@@ -20,16 +22,20 @@ int main() {
         BeginDrawing();
         ClearBackground(WHITE);
         //Game Logic Begins
+        bool isInAir{posY != effLowerBound};
         posY += y_velocity;
-        if (posY >= (window_height - height)) { 
+        if (posY >= (effLowerBound)) { 
             y_velocity = 0;
         } else {
             y_velocity += gravity; 
         }    
         
         // Jump Logic
-        if (IsKeyPressed(KEY_SPACE) && posY == window_height - height) {
-            y_velocity -=10;
+        if (IsKeyPressed(KEY_SPACE) && !isInAir) {
+            y_velocity += jump_velocity;
+        }
+        if (posY > effLowerBound) {
+            posY = effLowerBound;
         }
 
         DrawRectangle(window_width / 2, posY, width, height, BLUE);
